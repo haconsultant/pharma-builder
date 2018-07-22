@@ -43,8 +43,8 @@ export function insertDatabaseConfig (data) {
   return deferred.promise
 }
 
-export function resetDatabase () {
-  db.remove({}, { multi: true }, function (err, numRemoved) {
+export function resetDatabase (id) {
+  db.remove({ _id: id }, { multi: true }, function (err, numRemoved) {
     if (err) {
       console.log(err)
     } else {

@@ -1,10 +1,20 @@
 <template>
     <div id="app">
-    <v-system-bar class="system__bar" fixed app window style="-webkit-app-region: drag"> 
-      <v-spacer></v-spacer>
-      <v-btn flat small class="button__system" @click="minimize()"><v-icon>remove</v-icon></v-btn>
-      <v-btn flat small class="button__system" @click="close()"><v-icon>close</v-icon></v-btn>
-    </v-system-bar>
+        <v-system-bar class="system__bar" fixed app window style="-webkit-app-region: drag">
+            <v-menu bottom left>
+                <v-btn slot="activator" flat small class="button__system">
+                    <v-icon>more_vert</v-icon>
+                </v-btn>
+                <v-list></v-list>
+            </v-menu>
+            <v-spacer></v-spacer>
+            <v-btn flat small class="button__system" @click="minimize()">
+                <v-icon>remove</v-icon>
+            </v-btn>
+            <v-btn flat small class="button__system" @click="close()">
+                <v-icon>close</v-icon>
+            </v-btn>
+        </v-system-bar>
         <v-app dark>
             <v-content>
                 <v-container fluid class="flex-fluid">
