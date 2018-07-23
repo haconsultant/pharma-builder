@@ -1,6 +1,7 @@
 const state = {
   id: '',
-  synchronizing: false
+  synchronizing: false,
+  hasConfig: false
 }
 
 const mutations = {
@@ -9,6 +10,9 @@ const mutations = {
   },
   SYNC (state, data) {
     state.synchronizing = data
+  },
+  HAS_CONFIG (state, data) {
+    state.hasConfig = data
   }
 }
 
@@ -21,6 +25,10 @@ const actions = {
   },
   isSynchronizing ({ commit }, data) {
     commit('SYNC', data)
+  },
+  hasConfig ({ commit }, data) {
+    console.log(data)
+    commit('HAS_CONFIG', data)
   }
 }
 

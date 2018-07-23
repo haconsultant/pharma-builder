@@ -7,6 +7,7 @@ const state = {
 const mutations = {
   CRON_TIMER (state, data) {
     state.cron = data
+    console.log(data)
   },
   TASK_TIMER (state, data) {
     let hours = data.hours === '00' ? '' : `${data.hours} hora(s)`

@@ -9,15 +9,17 @@ export default {
   }),
   created () {
     this.$bus.on('cron', () => {
+      console.log('Start CRON!')
       this.start()
     })
   },
   beforeDestroy () {
-    this.$bus.off('start')
+    this.$bus.off('cron')
   },
   methods: {
     start () {
       let timer = this.$store.state.schedule.cron
+      console.log(timer)
       let job
       job = this.$cron.schedule(timer, () => {
         this.$bus.emit('sycn')

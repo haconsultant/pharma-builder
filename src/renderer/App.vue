@@ -65,15 +65,13 @@ export default {
   methods: {
     usarData () {
       this.$store.dispatch('globalId', id).then((response) => {
-        console.log(response)
-        globalConfig(id).then((response) => {
-          console.log(response.stored)
-          if (response.stored) {
+        globalConfig(id).then(() => {
+          console.log(this.$store.state.global.hasConfig)
+          if (!this.$store.state.global.hasConfig) {
             this.$router.push('/User/Login')
           } else {
             this.$router.push('/Home')
           }
-          console.log(response)
         })
       })
     },

@@ -3,7 +3,7 @@
         <v-card color="blue-grey lighten-5" id="conn__module" class="fixed__card">
             <v-card-title primary-title>
                 <div class="headline">Base de Datos</div>
-                <v-btn @click="testingGlobal()">Sync</v-btn>
+                <v-btn :loading="sync" @click="testingGlobal()">Sync</v-btn>
             </v-card-title>
             <v-card-text class="fluid__container"> 
                 <h1>{{activeDatabase}}</h1>
@@ -82,6 +82,9 @@ export default {
     }
   },
   computed: {
+    sync () {
+      return this.$store.state.global.synchronizing
+    },
     server () {
       return this.$store.state.database.config.server
     }

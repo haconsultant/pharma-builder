@@ -76,7 +76,7 @@
                             <v-card-text>
                                 <v-layout row>
                                     <v-flex class="pr-3">
-                                        <v-slider label="m:" v-model="timeMinutes" :max="59" :min="5"></v-slider>
+                                        <v-slider label="m:" v-model="timeMinutes" :max="59" :min="1"></v-slider>
                                     </v-flex>
                                     <v-flex shrink style="width: 60px">
                                         <v-text-field v-model="timeMinutes" class="mt-0" hide-details single-line type="number"></v-text-field>
@@ -116,7 +116,7 @@
             </v-card>
             <div class="stepper__footer">
                 <v-layout align-center justify-end>
-                    <v-btn router to="/Home" large color="primary" @click="finishWalkthrough()">
+                    <v-btn large color="primary" @click="finishWalkthrough()">
                         Finalizar
                     </v-btn>
                     <v-btn large color="primary" @click="reset()">
@@ -133,7 +133,6 @@ import { saveDatabaseConfig, resetDatabase } from '@/utils/db/localdb'
 export default {
   data: () => ({
     configInfo: {},
-    isSync: false,
     stateSync: 'm',
     step: 0,
     result: [],
@@ -207,7 +206,6 @@ export default {
       })
     },
     startSync () {
-      this.isSync = true
       this.$bus.emit('sycn')
     },
     finishWalkthrough () {
@@ -217,6 +215,7 @@ export default {
       this.configInfo.userInfo = this.$store.state.user
       saveDatabaseConfig(this.$store.state.global.id, this.configInfo).then(() => {
         this.$bus.emit('cron')
+        this.$router.push('/Home')
       })
     },
     reset () {
