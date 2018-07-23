@@ -67,9 +67,9 @@ export function mssqlConectDataBase (config) {
 }
 
 export function mssqlGetClientInventory (config, database) {
+  console.log(store.state.user)
   var result = {
     id_pharmacy: store.state.user.pharmacy.id,
-    // id_pharmacy_branch: 'c8a72ed0-0add-11e8-bbbc-f7ade388ac6c',
     id_pharmacy_branch: store.state.user.pharmacy.idBranch,
     inventory: []
   }

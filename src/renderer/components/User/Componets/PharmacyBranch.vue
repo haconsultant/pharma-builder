@@ -76,7 +76,7 @@
     },
     methods: {
       getInfo () {
-        this.pharmacies = [this.$store.state.user.info.pharmacies]
+        this.pharmacies = this.$store.state.user.info.pharmacies
       },
       selectedPharmacy (id) {
         this.selectedPharmacyId = id

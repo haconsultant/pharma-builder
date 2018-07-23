@@ -21,9 +21,9 @@ export default new Router({
       component: require('@/components/User/Login').default
     },
     {
-      path: '/User/Wellcome',
-      name: 'login_wellcome',
-      component: require('@/components/User/Componets/Wellcome').default
+      path: '/User/PharmacyBranch',
+      name: 'login_pharmacyBranch',
+      component: require('@/components/User/Componets/PharmacyBranch').default
     },
     {
       path: '*',

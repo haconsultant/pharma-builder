@@ -19,7 +19,7 @@ Vue.prototype.$cron = cron
 Vue.use(VueBus)
 Vue.use(Vuetify, {
   theme: {
-    primary: '#00E5FF',
+    primary: '#cdd43d',
     secondary: '#00B8D4',
     accent: '#01928e',
     error: '#E53935',

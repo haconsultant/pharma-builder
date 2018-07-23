@@ -19,13 +19,13 @@ export default {
   },
   methods: {
     start () {
-      console.log('Star Sync')
+      this.$store.dispatch('isSynchronizing', true)
       mssqlGetClientInventory(this.$store.state.database.config, this.$store.state.database.type).then(response => {
         this.result = response
         console.log(this.result)
       }).then(() => {
         sycnInventory(this.result).then(response => {
-          this.isSync = false
+          this.$store.dispatch('isSynchronizing', false)
         })
       })
     }

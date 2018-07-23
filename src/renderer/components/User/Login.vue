@@ -23,8 +23,6 @@
 </template>
 <script>
 import { logUser, getPharmacyBranches } from '@/utils/api/access'
-import { resetDatabase } from '@/utils/db/localdb'
-const id = '905cf401-c38f-4f72-8df4-662cb8ff621e'
 export default {
   data: () => ({
     imgUrl: 'static/logo.png',
@@ -51,41 +49,31 @@ export default {
     submit () {
       if (this.$refs.form.validate()) {
         logUser(this.user.name, this.user.password).then(response => {
-          if (response.data.message[0].user_type === 'farmacia') {
-            this.user.id = response.data.message[0].id
+          if (response.data.message.user_type === 'farmacia') {
+            this.user.id = response.data.message.id
             getPharmacyBranches(this.user.id).then(response => {
-              console.log(response.data)
               this.checkPharmacyInfo(response.data.pharmacies).then(response => {
                 this.user.pharmacies = response
                 this.$store.dispatch('saveUserData', this.user)
-                this.$router.push('/User/Wellcome')
+                this.$router.push('/User/PharmacyBranch')
               })
             })
           } else {
             console.log('Crendenciales Incorrectas')
           }
-        }).then(() => {
-          console.log({a: this.pharmacies, b: this.branches})
         })
       }
     },
     checkPharmacyInfo (data) {
+      var hasBranches = []
       return new Promise((resolve, reject) => {
-        var beta = []
-        var aplha = data.reduce((start, next, index, array) => {
-          if (array[index].branches.length < 0) {
-            beta.push([index])
-          } else {
-            beta.push(['key'])
+        data.map((pharmacy) => {
+          if (pharmacy.branches.length > 0) {
+            hasBranches.push(pharmacy)
           }
-          return beta
         })
-        console.log(aplha)
-        resolve(aplha)
+        resolve(hasBranches)
       })
-    },
-    reset () {
-      resetDatabase(id)
     },
     clear () {
       this.$refs.form.reset()

@@ -1,11 +1,24 @@
 <template>
-    <v-card class="flex-fluid" id="home__box">
+  <v-card class="flex-fluid" id="home__box">
+            <v-container class="full-flex">
+                <connection></connection>
+        </v-container>
+                <v-container class="full-flex">
+                <schedule></schedule>
+        </v-container>
+  </v-card>
+    <!-- <v-card class="flex-fluid" id="home__box">
         <v-container class="full-flex">
-            <connection></connection>
+                <connection></connection>
         </v-container>
         <v-container class="full-flex">
-            <schedule></schedule>
-        </v-container>
+            <v-flex xs12 sm6 md4 lg3 align-center>
+                <connection></connection>
+            </v-flex>
+            <v-flex xs12 sm6 md4 lg3 align-center>
+                <schedule></schedule>
+            </v-flex>
+        </v-container> -->
     </v-card>
 </template>
 

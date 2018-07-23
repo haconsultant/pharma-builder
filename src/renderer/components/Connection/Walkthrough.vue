@@ -48,10 +48,12 @@
                     </v-card>
                 </div>
                 <div class="stepper__footer">
+                <v-layout align-center justify-end>
                     <v-btn large color="primary" @click="nextStep()">
                         Continue
                     </v-btn>
                     <v-btn large flat @click="lastStep()">Cancel</v-btn>
+                </v-layout>
                 </div>
             </v-stepper-content>
             <v-stepper-content step="3" class="step__container">
@@ -109,7 +111,7 @@
                     <v-subheader class="display-1">¿Desea Sincronizar con la nube en este momento?</v-subheader>
                 </v-layout>
                 <v-layout align-center justify-center>
-                  <v-btn large :loading="isSync" color="blue lighten-3" class="white--text" @click="startSync()">Sincronizar</v-btn>
+                  <v-btn large :loading="sync" color="blue lighten-3" class="white--text" @click="startSync()">Sincronizar</v-btn>
                 </v-layout>
             </v-card>
             <div class="stepper__footer">
@@ -149,6 +151,11 @@ export default {
       }
     }
   }),
+  computed: {
+    sync () {
+      return this.$store.state.global.synchronizing
+    }
+  },
   watch: {
     timeHours () {
       if (this.timeHours < 10) {
@@ -167,7 +174,7 @@ export default {
     },
     step () {
       if (this.step === 4) {
-        // this.saveConnectionConfig()
+        // this.startSync()
       }
     }
   },
@@ -207,7 +214,7 @@ export default {
       this.configInfo.config = this.config
       this.configInfo.cron = { hours: this.timeHours, minutes: this.timeMinutes }
       this.configInfo.dataBaseType = this.databaseType
-      this.configInfo.pharmacyInfo = this.$store.state.user.pharmacy
+      this.configInfo.userInfo = this.$store.state.user
       saveDatabaseConfig(this.$store.state.global.id, this.configInfo).then(() => {
         this.$bus.emit('cron')
       })
@@ -264,6 +271,7 @@ export default {
   .step__content {
     height: auto;
     min-height: 420px;
+    background:#2C325D!important;
   }
   .stepper__footer {
     padding-bottom: 3rem; 
@@ -272,6 +280,7 @@ export default {
     height: 100%;
     width: 100%;
     padding: 3rem;
+    background: #1F2341!important;
   }
 
 </style>

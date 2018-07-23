@@ -92,8 +92,8 @@ export default {
   },
   methods: {
     testingGlobal () {
-      this.$bus.emit('sycn')
       console.log(this.$store.state)
+      this.$bus.emit('sycn')
     },
     openConfig () {
       this.dialog = true

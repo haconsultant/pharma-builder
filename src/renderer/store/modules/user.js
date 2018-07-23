@@ -17,6 +17,7 @@ const mutations = {
   },
   SAVE_PHARMACY_INFO (state, data) {
     state.pharmacy = Object.assign({}, data)
+    console.log(state.pharmacy)
   },
   REMOVE_USER_DATA (state) {
     state.info = {}
@@ -26,9 +27,11 @@ const mutations = {
 
 const actions = {
   saveUserData ({ commit }, data) {
+    console.log(data)
     commit('SAVE_USER_DATA', data)
   },
   pharmacyInfo ({ commit }, data) {
+    console.log(data)
     return new Promise((resolve, reject) => {
       commit('SAVE_PHARMACY_INFO', data)
       resolve()

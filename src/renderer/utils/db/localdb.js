@@ -1,4 +1,5 @@
 import db from '@/datastore'
+import { globalConfig } from '@/utils/db/helpers/procesor'
 import q from 'q'
 import store from '@/store'
 
@@ -44,17 +45,18 @@ export function insertDatabaseConfig (data) {
 }
 
 export function resetDatabase (id) {
-  db.remove({ _id: id }, { multi: true }, function (err, numRemoved) {
+  var deferred = q.defer()
+  db.remove({}, { multi: true }, function (err, numRemoved) {
     if (err) {
-      console.log(err)
+      deferred.resolve(err)
     } else {
-      console.log(numRemoved)
+      deferred.resolve(numRemoved)
     }
   })
+  return deferred.promise
 }
 
 export function saveDatabaseConfig (id, data) {
-  console.log(data)
   return new Promise((resolve, reject) => {
     fecthDatabaseConfig(id).then(response => {
       if (response === null) {
@@ -66,6 +68,8 @@ export function saveDatabaseConfig (id, data) {
           console.log(response)
         })
       }
+    }).then(() => {
+      globalConfig(id)
     })
     resolve()
   })
