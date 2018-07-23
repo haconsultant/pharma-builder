@@ -5,6 +5,10 @@
                 <div class="headline">Sincronización</div>
                 <v-btn @click="testingCRON()">Check-CRON</v-btn>
             </v-card-title>
+            <v-card-text class="fluid__container"> 
+                <h1>{{ `${timer.hours}:${timer.minutes} Horas/Minutos` }}</h1>
+                <p>{{ task }}</p>
+            </v-card-text>
             <v-card-actions>
                 <v-layout align-center justify-end class="large__title">
                    <v-btn  @click.stop="dialog = true">Configuracion<v-icon right dark>settings</v-icon></v-btn>
@@ -81,6 +85,14 @@ export default {
       timeHours: '',
       timeMinutes: '',
       dialog: false
+    }
+  },
+  computed: {
+    timer () {
+      return this.$store.state.schedule.timer
+    },
+    task () {
+      return this.$store.state.schedule.task
     }
   },
   watch: {
