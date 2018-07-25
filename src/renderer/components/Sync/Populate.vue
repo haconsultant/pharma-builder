@@ -19,6 +19,8 @@ export default {
   },
   methods: {
     start () {
+      console.log(this.$store.state.database.config)
+      console.log(this.$store.state.database.type)
       this.$store.dispatch('isSynchronizing', true)
       mssqlGetClientInventory(this.$store.state.database.config, this.$store.state.database.type).then(response => {
         // if (response.code === '')

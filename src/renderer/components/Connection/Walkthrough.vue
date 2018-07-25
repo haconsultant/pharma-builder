@@ -16,21 +16,20 @@
                         <v-layout align-center justify-center>
                             <v-subheader class="headline">Servidor de Base de Datos</v-subheader>
                         </v-layout>
-                        <v-form class="step__controls">
-                            <v-text-field v-model="config.server" label="Direcion del Servidor" outline required></v-text-field>
-                            <v-text-field v-model="config.userName" label="Usuario" outline required></v-text-field>
-                            <v-text-field v-model="config.password" label="Contraseña" outline required></v-text-field>
+                        <v-form ref="serverForm" lazy-validation class="step__controls">
+                            <v-text-field v-model="config.server" :rules="serverRule" label="Direcion del Servidor" outline required></v-text-field>
+                            <v-text-field v-model="config.userName" :rules="userRule" label="Usuario" outline required></v-text-field>
+                            <v-text-field v-model="config.password" :rules="passwordRule" label="Contraseña" outline required></v-text-field>
                             <v-layout align-center justify-center>
-                                <v-btn large @click="serverConnection">Conectarse</v-btn>
+                                <v-btn :loading="isLoading" large @click="serverConnection">Conectarse</v-btn>
                             </v-layout>
                         </v-form>
                     </v-card>
                 </div>
                 <div class="stepper__footer">
-                    <v-btn large color="primary" @click="nextStep()">
-                        Continue
-                    </v-btn>
-                    <v-btn large flat>Cancel</v-btn>
+                  <v-layout align-center justify-end>
+                    <v-btn :disabled="!isServerConnected" large color="primary" @click="nextStep()">Siguiente</v-btn>
+                  </v-layout>
                 </div>
             </v-stepper-content>
             <v-stepper-content step="2" class="step__container">
@@ -42,18 +41,16 @@
                         <v-form class="step__controls">
                             <v-select outline v-model="config.options.database" :items="dataBaseName" label="Bases de Datos"></v-select>
                             <v-layout align-center justify-center>
-                                <v-btn large @click="connectDatabase">Conectarse</v-btn>
+                                <v-btn :loading="isLoading" large @click="connectDatabase">Conectarse</v-btn>
                             </v-layout>
                         </v-form>
                     </v-card>
                 </div>
                 <div class="stepper__footer">
-                <v-layout align-center justify-end>
-                    <v-btn large color="primary" @click="nextStep()">
-                        Continue
-                    </v-btn>
-                    <v-btn large flat @click="lastStep()">Cancel</v-btn>
-                </v-layout>
+                  <v-layout align-center justify-space-between>
+                    <v-btn large color="primary" @click="lastStep()">Anterior</v-btn>
+                    <v-btn :disabled="!isDatabaseConnected" large color="primary" @click="nextStep()">Siguiente</v-btn>
+                  </v-layout>
                 </div>
             </v-stepper-content>
             <v-stepper-content step="3" class="step__container">
@@ -63,7 +60,7 @@
                             <v-layout align-center justify-center>
                                 <v-subheader class="headline">Frecuencia de Actualizacion de Inventario</v-subheader>
                             </v-layout>
-                            <v-card-text>
+                            <v-card-text class="text__fixed">
                                 <v-layout row>
                                     <v-flex class="pr-3">
                                         <v-slider label="h:" v-model="timeHours" :max="12" :min="0"></v-slider>
@@ -73,7 +70,7 @@
                                     </v-flex>
                                 </v-layout>
                             </v-card-text>
-                            <v-card-text>
+                            <v-card-text class="text__fixed">
                                 <v-layout row>
                                     <v-flex class="pr-3">
                                         <v-slider label="m:" v-model="timeMinutes" :max="59" :min="1"></v-slider>
@@ -90,15 +87,18 @@
                                 <v-layout align-center justify-center>
                                     <p class="display-2">{{timeHours + ' : ' + timeMinutes + ' ' + stateSync}}</p>
                                 </v-layout>
+                                <v-layout align-center justify-center>
+                                  <v-btn large color="primary" @click="setCronTaskTimer()">Establecer</v-btn>
+                                </v-layout>
                             </v-card-text>
                         </v-card>
                     </v-card>
                 </div>
                 <div class="stepper__footer">
-                    <v-btn large color="primary" @click="nextStep()">
-                        Continue
-                    </v-btn>
-                    <v-btn large flat @click="lastStep()">Cancel</v-btn>
+                  <v-layout align-center justify-space-between>
+                    <v-btn large color="primary" @click="lastStep()">Anterior</v-btn>
+                    <v-btn :disabled="!isCronSetted" large color="primary" @click="nextStep()">Siguiente</v-btn>
+                  </v-layout>
                 </div>
             </v-stepper-content>
         </v-stepper-items>
@@ -115,12 +115,9 @@
                 </v-layout>
             </v-card>
             <div class="stepper__footer">
-                <v-layout align-center justify-end>
+                <v-layout align-center justify-center>
                     <v-btn large color="primary" @click="finishWalkthrough()">
                         Finalizar
-                    </v-btn>
-                    <v-btn large color="primary" @click="reset()">
-                        Reset
                     </v-btn>
                 </v-layout>
             </div>
@@ -132,6 +129,10 @@ import { mssqlServerConnection, mssqlConectDataBase } from '@/utils/server/mssql
 import { saveDatabaseConfig, resetDatabase } from '@/utils/db/localdb'
 export default {
   data: () => ({
+    isLoading: false,
+    isServerConnected: false,
+    isDatabaseConnected: false,
+    isCronSetted: false,
     configInfo: {},
     stateSync: 'm',
     step: 0,
@@ -148,7 +149,16 @@ export default {
         database: '',
         rowCollectionOnDone: true
       }
-    }
+    },
+    serverRule: [
+      v => !!v || 'Direccion del servidor requerida'
+    ],
+    userRule: [
+      v => !!v || 'Nombre de usuario de acceso al servidor requerido'
+    ],
+    passwordRule: [
+      v => !!v || 'Contraseña de acceso al servidor requerida'
+    ]
   }),
   computed: {
     sync () {
@@ -157,6 +167,7 @@ export default {
   },
   watch: {
     timeHours () {
+      this.isCronSetted = false
       if (this.timeHours < 10) {
         this.timeHours = ('0' + this.timeHours).slice(-2)
       }
@@ -167,14 +178,27 @@ export default {
       }
     },
     timeMinutes () {
+      this.isCronSetted = false
       if (this.timeMinutes < 10) {
         this.timeMinutes = ('0' + this.timeMinutes).slice(-2)
       }
     },
     step () {
       if (this.step === 4) {
-        // this.startSync()
+        this.saveTempConfig()
       }
+    },
+    'config.userName' () {
+      this.isServerConnected = false
+    },
+    'config.password' () {
+      this.isServerConnected = false
+    },
+    'config.server' () {
+      this.isServerConnected = false
+    },
+    'config.options.database' () {
+      this.isDatabaseConnected = false
     }
   },
   mouted () {
@@ -182,40 +206,56 @@ export default {
   },
   methods: {
     serverConnection () {
-      this.connectSuccessful = true
-      this.dataBaseQuantity = []
-      mssqlServerConnection(this.config).then(response => {
-        response.forEach(tuple => {
-          this.dataBaseName.push({text: tuple.DATABASE_NAME, value: tuple.DATABASE_NAME})
+      if (this.$refs.serverForm.validate()) {
+        this.isLoading = true
+        this.connectSuccessful = true
+        this.dataBaseQuantity = []
+        mssqlServerConnection(this.config).then(response => {
+          if (response.code !== 'ELOGIN') {
+            response.forEach(tuple => {
+              this.dataBaseName.push({text: tuple.DATABASE_NAME, value: tuple.DATABASE_NAME})
+            })
+            this.isLoading = false
+            this.isServerConnected = true
+            // this.nextStep()
+            this.configInfo.dataBaseName = this.dataBaseName
+            this.$store.dispatch('avialableDatabases', this.dataBaseName)
+          } else {
+            this.isLoading = false
+            console.log('Login FAIL')
+          }
         })
-      }).then(() => {
-        this.nextStep()
-        this.configInfo.dataBaseName = this.dataBaseName
-        this.$store.dispatch('avialableDatabases', this.dataBaseName)
-      })
+      }
     },
     connectDatabase () {
+      this.isLoading = true
       mssqlConectDataBase(this.config).then(response => {
         if (response.valid) {
           this.databaseType = response.schema
-          this.nextStep()
+          this.isDatabaseConnected = true
         } else {
           console.log(this.config)
         }
         this.isLoading = false
       })
     },
+    setCronTaskTimer () {
+      this.isCronSetted = true
+    },
     startSync () {
       this.$bus.emit('sycn')
     },
     finishWalkthrough () {
+      this.$bus.emit('cron')
+      this.$router.push('/Home')
+    },
+    saveTempConfig () {
       this.configInfo.config = this.config
       this.configInfo.cron = { hours: this.timeHours, minutes: this.timeMinutes }
       this.configInfo.dataBaseType = this.databaseType
       this.configInfo.userInfo = this.$store.state.user
       saveDatabaseConfig(this.$store.state.global.id, this.configInfo).then(() => {
-        this.$bus.emit('cron')
-        this.$router.push('/Home')
+        console.log('Saved')
       })
     },
     reset () {
@@ -243,6 +283,12 @@ export default {
 </script>
 
 <style>
+  .box__fixed {
+    height: 100%;
+    width: 100%;
+    padding: 3rem;
+    background: #1F2341!important;
+  }
   .space__title {
     padding: 4rem;
     text-align: center;
@@ -275,11 +321,7 @@ export default {
   .stepper__footer {
     padding-bottom: 3rem; 
   }
-  .box__fixed {
-    height: 100%;
-    width: 100%;
-    padding: 3rem;
-    background: #1F2341!important;
+  .text__fixed {
+    padding: 10px!important;
   }
-
 </style>

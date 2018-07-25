@@ -8,7 +8,7 @@
                 <h1>Pharma - Inventory Sync</h1>
                 <h1>Acceso</h1>
                 <v-text-field hint="Usuario de Pharma" v-model="user.name" :rules="nameRules" label="Usuario" required></v-text-field>
-                <v-text-field hint="Contraseña de acceso al portal de Pharma" v-model="user.password" type="password" label="Contraseña" required></v-text-field>
+                <v-text-field hint="Contraseña de acceso al portal de Pharma" v-model="user.password" :rules="passwordRules" type="password" label="Contraseña" required></v-text-field>
                 <!-- <v-select v-model="select" :items="items" :rules="[v => !!v || 'Selecione una sucursal']" label="Sucursal" required></v-select> -->
                 <v-checkbox v-model="checkbox" :rules="[v => !!v || 'You must agree to continue!']" label="Acuerdos de Servicio" required></v-checkbox>
                 <v-layout align-center justify-center>

@@ -12,6 +12,7 @@ export function mssqlServerConnection (config) {
   var connection = new Connection(config)
   connection.on('connect', function (err) {
     if (err) {
+      console.log(err)
       deferred.resolve(err)
     } else {
       var request = new Request('sp_databases', function (err, rowCount) {
