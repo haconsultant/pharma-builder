@@ -2,7 +2,6 @@
 
 import { app, BrowserWindow, Menu, Tray } from 'electron'
 import path from 'path'
-import { exists } from 'fs';
 
 /**
  * Auto Updater
@@ -87,7 +86,7 @@ app.on('activate', () => {
   }
 })
 
-exit () {
+function exit () {
   app.quit()
   mainWindow = null
   tray = null

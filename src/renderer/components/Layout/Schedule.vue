@@ -3,7 +3,8 @@
         <v-card color="blue-grey lighten-5" id="cron__module" class="fixed__card">
             <v-card-title primary-title>
                 <div class="headline">Sincronización</div>
-                <v-btn @click="testingCRON()">Check-CRON</v-btn>
+                <v-btn @click="startCRON()">Start</v-btn>
+                <v-btn @click="stopCRON()">Stop</v-btn>
             </v-card-title>
             <v-card-text class="fluid__container"> 
                 <h1>{{ `${timer.hours}:${timer.minutes} Horas/Minutos` }}</h1>
@@ -113,8 +114,11 @@ export default {
     }
   },
   methods: {
-    testingCRON () {
-      this.$bus.emit('global-testing')
+    startCRON () {
+      this.$bus.emit('cron')
+    },
+    stopCRON () {
+      this.$bus.emit('stop-cron')
     }
   }
 }

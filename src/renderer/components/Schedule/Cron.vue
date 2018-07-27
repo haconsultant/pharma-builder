@@ -5,34 +5,45 @@
 <script>
 export default {
   data: () => ({
-    cron: ''
+    cron: undefined
   }),
   created () {
     this.$bus.on('cron', () => {
-      console.log('Start CRON!')
       this.start()
+    })
+    this.$bus.on('stop-cron', () => {
+      this.stop()
     })
   },
   beforeDestroy () {
     this.$bus.off('cron')
+    this.$bus.off('stop-cron')
   },
   methods: {
     start () {
-      let timer = this.$store.state.schedule.cron
-      console.log(timer)
-      let job
-      job = this.$cron.schedule(timer, () => {
-        this.$bus.emit('sycn')
-      })
-      this.cron = job
-      this.cron.start()
+      if (this.cron === undefined) {
+        let timer = this.$store.state.schedule.cron
+        console.log(timer)
+        let job
+        job = this.$cron.schedule(timer, () => {
+          this.$bus.emit('sycn')
+        })
+        this.cron = job
+        this.cron.start()
+        console.log(this.cron)
+      } else {
+        console.log('reschedule')
+        this.reschedule()
+      }
+    },
+    stop () {
+      this.cron.destroy()
+      this.cron = undefined
+      console.log(this.cron)
     },
     reschedule () {
-      this.cron.destroy()
-      let timer = this.$store.state.schedule.timer
-      console.log(timer)
-      // this.cron.reschedule(timer)
-      console.log('DRY but dont\' KISS')
+      this.stop()
+      this.start()
     }
   }
 }
