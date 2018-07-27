@@ -44,7 +44,8 @@
 import Cron from '@/components/Schedule/Cron'
 import Populate from '@/components/Sync/Populate'
 import { globalConfig } from '@/utils/db/helpers/procesor'
-import { resetDatabase } from '@/utils/db/localdb'
+import { resetDatabase, fecthDatabaseConfig } from '@/utils/db/localdb'
+
 const id = '905cf401-c38f-4f72-8df4-662cb8ff621e'
 export default {
   name: 'etl-pharma',
@@ -65,9 +66,24 @@ export default {
   methods: {
     usarData () {
       this.$store.dispatch('globalId', id).then((response) => {
-        globalConfig(id).then(() => {
-          console.log(this.$store.state.global.hasConfig)
-          if (!this.$store.state.global.hasConfig) {
+        fecthDatabaseConfig(id).then(response => {
+          if (Object.keys(response).length > 0) {
+            this.hasConfig = true
+            console.log(response)
+            this.$store.dispatch('hasConfig', true)
+            this.$store.dispatch('saveDatabaseConfig', response.config)
+            this.$store.dispatch('avialableDatabases', response.dataBaseName)
+            this.$store.dispatch('saveSyncSchedule', response.cron)
+            this.$store.dispatch('currentDatabaseType', response.dataBaseType)
+            this.$store.dispatch('pharmacyInfo', response.userInfo.pharmacyInfo).then(() => {
+              console.log('At least!!')
+            })
+          } else {
+            this.hasConfig = false
+            this.$store.dispatch('hasConfig', false)
+          }
+        }).then(() => {
+          if (!this.hasConfig) {
             this.$router.push('/User/Login')
           } else {
             this.$router.push('/Home')

@@ -5,10 +5,7 @@ const state = {
     password: '',
     pharmacies: []
   },
-  pharmacy: {
-    id: '',
-    idBranch: ''
-  }
+  pharmacyInfo: {}
 }
 
 const mutations = {
@@ -16,8 +13,8 @@ const mutations = {
     state.info = Object.assign({}, data)
   },
   SAVE_PHARMACY_INFO (state, data) {
-    state.pharmacy = Object.assign({}, data)
-    console.log(state.pharmacy)
+    state.pharmacyInfo = Object.assign({}, data)
+    console.log(state.pharmacyInfo)
   },
   REMOVE_USER_DATA (state) {
     state.info = {}
@@ -31,7 +28,6 @@ const actions = {
     commit('SAVE_USER_DATA', data)
   },
   pharmacyInfo ({ commit }, data) {
-    console.log(data)
     return new Promise((resolve, reject) => {
       commit('SAVE_PHARMACY_INFO', data)
       resolve()

@@ -70,8 +70,8 @@ export function mssqlConectDataBase (config) {
 export function mssqlGetClientInventory (config, database) {
   console.log(store.state.user)
   var result = {
-    id_pharmacy: store.state.user.pharmacy.id,
-    id_pharmacy_branch: store.state.user.pharmacy.idBranch,
+    id_pharmacy: store.state.user.pharmacyInfo.pharmacy.id,
+    id_pharmacy_branch: store.state.user.pharmacyInfo.branch.id,
     inventory: []
   }
   var deferred = q.defer() // create a promise

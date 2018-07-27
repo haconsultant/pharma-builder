@@ -1,5 +1,8 @@
 <template>
   <v-card class="flex-fluid" id="home__box">
+                <v-container class="full-flex">
+                <info></info>
+        </v-container>
             <v-container class="full-flex">
                 <connection></connection>
         </v-container>
@@ -24,11 +27,11 @@
 
 <script>
   import Connection from './Layout/Connection'
+  import Info from './Layout/Info'
   import Schedule from './Layout/Schedule'
-
   export default {
     name: 'welcome',
-    components: { Connection, Schedule },
+    components: { Connection, Info, Schedule },
     created () {
       // this.usarData()
     },

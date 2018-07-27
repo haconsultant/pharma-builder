@@ -6,7 +6,7 @@ export function globalConfig (globalId) {
     fecthDatabaseConfig(globalId).then(response => {
       if (Object.keys(response).length > 0) {
         store.dispatch('hasConfig', true)
-        store.dispatch('saveDatabaseConfig', response)
+        store.dispatch('saveDatabaseConfig', response.config)
         store.dispatch('avialableDatabases', response.dataBaseName)
         store.dispatch('saveSyncSchedule', response.cron)
         store.dispatch('currentDatabaseType', response.dataBaseType)

@@ -12,7 +12,7 @@
                 <!-- <v-select v-model="select" :items="items" :rules="[v => !!v || 'Selecione una sucursal']" label="Sucursal" required></v-select> -->
                 <v-checkbox v-model="checkbox" :rules="[v => !!v || 'You must agree to continue!']" label="Acuerdos de Servicio" required></v-checkbox>
                 <v-layout align-center justify-center>
-                    <v-btn :disabled="!valid" @click="submit">
+                    <v-btn :loading="isLoading" :disabled="!valid" @click="submit">
                         Acceder
                     </v-btn>
                     <v-btn @click="clear">Limpiar</v-btn>
@@ -25,12 +25,13 @@
 import { logUser, getPharmacyBranches } from '@/utils/api/access'
 export default {
   data: () => ({
+    isLoading: false,
     imgUrl: 'static/logo.png',
     pharmacies: [],
     branches: [],
     user: {
       id: '',
-      name: '12345',
+      name: 'vargasmary',
       password: '12345mM*',
       pharmacies: []
     },
@@ -48,9 +49,10 @@ export default {
 
   methods: {
     submit () {
+      this.isLoading = true
       if (this.$refs.form.validate()) {
         logUser(this.user.name, this.user.password).then(response => {
-          if (response.data.message.user_type === 'farmacia') {
+          if (response.data.message.user_type === 'Dueño de farmacia') {
             this.user.id = response.data.message.id
             getPharmacyBranches(this.user.id).then(response => {
               this.checkPharmacyInfo(response.data.pharmacies).then(response => {
@@ -58,8 +60,11 @@ export default {
                 this.$store.dispatch('saveUserData', this.user)
                 this.$router.push('/User/PharmacyBranch')
               })
+            }).then(() => {
+              this.isLoading = false
             })
           } else {
+            this.isLoading = false
             console.log('Crendenciales Incorrectas')
           }
         })

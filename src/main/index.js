@@ -2,6 +2,7 @@
 
 import { app, BrowserWindow, Menu, Tray } from 'electron'
 import path from 'path'
+import { exists } from 'fs';
 
 /**
  * Auto Updater
@@ -60,13 +61,10 @@ function startComponents () {
   })
   tray = new Tray(iconPath)
   const contextMenu = Menu.buildFromTemplate([
-    {label: 'Conexion', type: 'radio'},
-    {label: 'Sincrionizar', type: 'radio'},
-    {label: 'Ayuda', type: 'radio'},
     { label: 'Salir',
       accelerator: 'Command+Q',
       selector: 'terminate:',
-      click () { app.quit() }
+      click () { exit() }
     }
   ])
   tray.setToolTip('ETL - Herramienta de Migracion')
@@ -89,6 +87,11 @@ app.on('activate', () => {
   }
 })
 
+exit () {
+  app.quit()
+  mainWindow = null
+  tray = null
+}
 /* autoUpdater.on('update-downloaded', () => {
   autoUpdater.quitAndInstall()
 })

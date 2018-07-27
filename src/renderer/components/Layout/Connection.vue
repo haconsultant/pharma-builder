@@ -4,6 +4,7 @@
             <v-card-title primary-title>
                 <div class="headline">Base de Datos</div>
                 <v-btn :loading="sync" @click="testingGlobal()">Sync</v-btn>
+                <v-btn @click="getInfo()">Local Info</v-btn>
             </v-card-title>
             <v-card-text class="fluid__container"> 
                 <h1>{{activeDatabase}}</h1>
@@ -25,7 +26,7 @@
                     <v-toolbar-title>Configuracion de Base de Datos</v-toolbar-title>
                     <v-spacer></v-spacer>
                     <v-toolbar-items>
-                        <v-btn dark flat @click.native="dialog = false">Guardar</v-btn>
+                        <v-btn dark flat @click="saveDatabaseConfig()">Guardar</v-btn>
                     </v-toolbar-items>
                 </v-toolbar>
                 <v-card-text>
@@ -94,13 +95,15 @@ export default {
     this.getDetails()
   },
   methods: {
-    testingGlobal () {
+    getInfo () {
       console.log(this.$store.state)
+    },
+    testingGlobal () {
       this.$bus.emit('sycn')
     },
     openConfig () {
       this.dialog = true
-      this.config = Object.assign({}, this.$store.state.database.config)
+      this.config = this.$store.state.database.config
       this.dataBaseName = this.$store.state.database.databases
     },
     serverConnection () {
@@ -119,14 +122,17 @@ export default {
       let dataBaseConfig = Object.assign({}, this.$store.state.database.config)
       let databases = this.$store.state.database.databases
       this.config = Object.assign({}, dataBaseConfig)
-      this.dataBaseName = databases
+      databases.forEach((database) => {
+        this.dataBaseName = database
+      })
     },
     getDetails () {
       let current = this.$store.state.database.config.options.database === 'efficacis3' ? 'Effacis' : 'SmartPharma'
       this.activeDatabase = current
     },
     saveDatabaseConfig () {
-      console.log('Saved')
+      console.log(this.config)
+      this.$store.dispatch('saveDatabaseConfig', this.config)
     },
     connectDatabase () {
       mssqlConectDataBase(this.config).then(response => {

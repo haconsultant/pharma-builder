@@ -243,6 +243,7 @@ export default {
       this.isCronSetted = true
     },
     startSync () {
+      console.log('Hallo!')
       this.$bus.emit('sycn')
     },
     finishWalkthrough () {

@@ -59,6 +59,10 @@
 <script>
   export default {
     data: () => ({
+      info: {
+        pharmacy: {},
+        branch: {}
+      },
       imageUrl: 'static/pharmacy.jpg',
       selected: false,
       selectedPharmacyId: '',
@@ -81,20 +85,29 @@
       selectedPharmacy (id) {
         this.selectedPharmacyId = id
         this.branches = []
-        this.pharmacies.map((pharmacy) => {
-          if (pharmacy.id === id) {
-            pharmacy.branches.map((branch) => {
+        this.pharmacies.map((pharmacyInfo) => {
+          if (pharmacyInfo.id === id) {
+            this.info.pharmacy = Object.assign({}, pharmacyInfo)
+            pharmacyInfo.branches.map((branch) => {
               this.branches.push(branch)
             })
           }
         })
-        console.log(this.branches)
+        console.log(this.info.pharmacy)
       },
       selectedPharmacyBranch (id) {
         this.selectedPharmacyBranchId = id
+        this.branches.map((branchInfo) => {
+          if (branchInfo.id === id) {
+            this.info.branch = Object.assign({}, branchInfo)
+          }
+          // this.selectedPharmacyBranchId = id
+        })
+        console.log(this.info.branch)
       },
       nextStep () {
-        this.$store.dispatch('pharmacyInfo', {id: this.selectedPharmacyId, idBranch: this.selectedPharmacyBranchId}).then(() => {
+        console.log(this.info)
+        this.$store.dispatch('pharmacyInfo', this.info).then(() => {
           this.$router.push('/Connection/Walkthrough')
         })
       },

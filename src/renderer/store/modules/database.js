@@ -14,6 +14,7 @@ const state = {
 
 const mutations = {
   DATABASE_CONFIG (state, data) {
+    console.log(data)
     state.config = Object.assign({}, data)
   },
   DATABASE_TYPE (state, data) {
@@ -28,7 +29,7 @@ const mutations = {
 const actions = {
   saveDatabaseConfig ({ commit }, data) {
     delete data._id
-    commit('DATABASE_CONFIG', data.config)
+    commit('DATABASE_CONFIG', data)
   },
   avialableDatabases ({ commit }, data) {
     commit('AVIALABLE_DATABASES', data)

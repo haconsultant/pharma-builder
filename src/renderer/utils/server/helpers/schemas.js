@@ -306,7 +306,12 @@ export const smartPharma = {
     'VenVentaRelacionDiagnostico',
     'VenVentaRelacionesCliente'
   ],
-  query: `SELECT A.Descripcion AS product_name, CONVERT (VARCHAR(50),SUM(B.Existencia), 128) AS quantity, ISNULL(CA.Descripcion,'n/a') AS 'uses', CONVERT (VARCHAR(50),A.M_CostoUnitario, 128) AS price,D.CodigoBarra AS product_barcode, ISNULL(EA.Nombre, 'n/a') AS component,F.Descripcion AS category, 
+  query: `SELECT 
+  A.Descripcion AS product_name, 
+  B.Existencia AS quantity, ISNULL(CA.Descripcion,'n/a') AS 'uses',
+  CONVERT (VARCHAR(50),A.M_CostoUnitario, 128) AS price,
+  D.CodigoBarra AS product_barcode, ISNULL(EA.Nombre, 'n/a') AS component,
+  F.Descripcion AS category, 
   G.Nombre AS brand
   FROM InvArticulo A
   LEFT JOIN InvLoteAlmacen B
@@ -571,7 +576,7 @@ export const efficasis = {
   query: `SELECT distinct
    ISNULL(B.Descrip1art, 'n/a') AS product_name,
    CONVERT (VARCHAR(50), A.CosUnit,128) AS price,
-   CONVERT (VARCHAR(50), A.Cantidad,128) AS quantity,
+   A.Cantidad AS quantity,
    B.CoBarra AS product_barcode,
    ISNULL(CA.Descripcion, 'n/a') AS 'uses',
    ISNULL(DA.Nombre, 'n/a') AS component,
@@ -601,3 +606,5 @@ FROM InArticu A
      ON BB.CoClaArtic = B.CoClaArtic 
 WHERE B.CoBarra <> '' AND  A.CosUnit>0 AND A.Cantidad >0 AND  B.Descrip1art <> ''`
 }
+
+/* ONVERT (VARCHAR(50), A.Cantidad,128) AS quantity */
