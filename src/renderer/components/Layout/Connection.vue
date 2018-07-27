@@ -11,7 +11,7 @@
                 <p>{{'Servidor - ' + server}}</p>
             </v-card-text>
             <v-card-actions>
-                <v-layout align-center justify-end class="mid__title">
+                <v-layout align-center justify-end class="mid__title" style="margin-top: -2rem!important;">
                 <v-btn @click="openConfig()">Configuracion<v-icon right dark>settings</v-icon></v-btn>
                 <v-btn router to="/connection/walkthrough">Paso a paso<v-icon right dark>list</v-icon></v-btn>
                 </v-layout>
@@ -39,7 +39,7 @@
                             <v-text-field v-model="config.userName" label="Usuario" required></v-text-field>
                             <v-text-field v-model="config.password" label="Contraseña" required></v-text-field>
                             <v-layout align-center justify-center>
-                                <v-btn large @click="serverConnection">Conectarse</v-btn>
+                                <v-btn :loading="isLoading" large @click="serverConnection">Conectarse</v-btn>
                             </v-layout>
                         </v-form>
                     </v-list>
@@ -48,10 +48,10 @@
                         <v-layout align-center justify-center>
                             <v-subheader class="headline">Base de Datos</v-subheader>
                         </v-layout>
-                        <v-form class="config__controls">
-                            <v-select outline v-model="config.options.database" :items="dataBaseName" label="Bases de Datos"></v-select>
-                            <v-layout align-center justify-center>
-                                <v-btn large @click="connectDatabase">Conectarse</v-btn>
+                        <v-form  class="config__controls">
+                            <v-select :disabled="!isServerConfig" outline v-model="config.options.database" :items="dataBaseName" label="Bases de Datos"></v-select>
+                            <v-layout  align-center justify-center>
+                                <v-btn :disabled="!isServerConfig" :loading="isLoadingDatabase" large @click="connectDatabase">Conectarse</v-btn>
                             </v-layout>
                         </v-form>
                     </v-list>
@@ -68,9 +68,13 @@ import { mssqlServerConnection, mssqlConectDataBase } from '@/utils/server/mssql
 export default {
   data () {
     return {
+      isServerConfig: false,
+      isLoading: false,
+      isLoadingDatabase: false,
       dialog: false,
       dataBaseName: [],
       activeDatabase: '',
+      databaseType: '',
       config: {
         userName: '',
         password: '',
@@ -91,8 +95,8 @@ export default {
     }
   },
   created () {
-    this.getConfigInfo()
-    this.getDetails()
+    /* this.getConfigInfo()
+    this.getDetails() */
   },
   methods: {
     getInfo () {
@@ -103,46 +107,64 @@ export default {
     },
     openConfig () {
       this.dialog = true
-      this.config = this.$store.state.database.config
-      this.dataBaseName = this.$store.state.database.databases
+      let Databases = this.$store.state.database.databases
+      let config = this.$store.state.database.config
+      let current = this.$store.state.database.config.options.database === 'efficacis3' ? 'Effacis' : 'SmartPharma'
+      this.activeDatabase = current
+      this.config = {
+        userName: config.userName,
+        password: config.password,
+        server: config.server,
+        options: {
+          database: config.database,
+          rowCollectionOnDone: true
+        }
+      }
+      this.config.options.database = current
+      this.dataBaseName = Databases
+      console.log(this.config)
+      console.log(this.dataBaseName)
     },
     serverConnection () {
+      this.isLoading = true
+      this.isServerConfig = false
       this.connectSuccessful = true
-      this.dataBaseQuantity = []
+      this.dataBaseName = []
       mssqlServerConnection(this.config).then(response => {
+        this.isServerConfig = true
         response.forEach(tuple => {
           this.dataBaseName.push({text: tuple.DATABASE_NAME, value: tuple.DATABASE_NAME})
         })
       }).then(() => {
-        this.nextStep()
+        this.isLoading = false
         console.log(this.dataBaseName)
       })
     },
     getConfigInfo () {
       let dataBaseConfig = Object.assign({}, this.$store.state.database.config)
       let databases = this.$store.state.database.databases
-      this.config = Object.assign({}, dataBaseConfig)
-      databases.forEach((database) => {
-        this.dataBaseName = database
-      })
-    },
-    getDetails () {
       let current = this.$store.state.database.config.options.database === 'efficacis3' ? 'Effacis' : 'SmartPharma'
+      this.config = Object.assign({}, dataBaseConfig)
       this.activeDatabase = current
+      if (!this.dataBaseName.length > 0) {
+        databases.forEach((database) => {
+          this.dataBaseName = database
+        })
+      }
     },
     saveDatabaseConfig () {
       console.log(this.config)
       this.$store.dispatch('saveDatabaseConfig', this.config)
     },
     connectDatabase () {
+      this.isLoadingDatabase = true
       mssqlConectDataBase(this.config).then(response => {
         if (response.valid) {
           this.databaseType = response.schema
-          this.nextStep()
+          this.isLoadingDatabase = false
         } else {
           console.log(this.config)
         }
-        this.isLoading = false
       })
     }
   }

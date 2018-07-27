@@ -11,8 +11,8 @@
                 <p>{{ task }}</p>
             </v-card-text>
             <v-card-actions>
-                <v-layout align-center justify-end class="large__title">
-                   <v-btn  @click.stop="dialog = true">Configuracion<v-icon right dark>settings</v-icon></v-btn>
+                <v-layout align-center justify-end class="large__title" style="margin-top: -2rem!important;">
+                   <v-btn  @click.stop="getInfo()">Configuracion<v-icon right dark>settings</v-icon></v-btn>
                 </v-layout>
             </v-card-actions>
         </v-card>
@@ -25,7 +25,7 @@
                     <v-toolbar-title>Configuracion de Sincronización</v-toolbar-title>
                     <v-spacer></v-spacer>
                     <v-toolbar-items>
-                        <v-btn dark flat @click.native="dialog = false">Guardar</v-btn>
+                        <v-btn dark flat @click.native="save()">Guardar</v-btn>
                     </v-toolbar-items>
                 </v-toolbar>
                 <v-card-text>
@@ -40,20 +40,20 @@
                             <v-card-text>
                                 <v-layout row>
                                     <v-flex class="pr-3">
-                                        <v-slider label="h:" v-model="timeHours" :max="12" :min="0"></v-slider>
+                                        <v-slider label="h:" v-model="cron.hours" :max="12" :min="0"></v-slider>
                                     </v-flex>
                                     <v-flex shrink style="width: 60px">
-                                        <v-text-field v-model="timeHours" class="mt-0" hide-details single-line type="number"></v-text-field>
+                                        <v-text-field v-model="cron.hours" class="mt-0" hide-details single-line type="number"></v-text-field>
                                     </v-flex>
                                 </v-layout>
                             </v-card-text>
                             <v-card-text>
                                 <v-layout row>
                                     <v-flex class="pr-3">
-                                        <v-slider label="m:" v-model="timeMinutes" :max="59" :min="5"></v-slider>
+                                        <v-slider label="m:" v-model="cron.minutes" :max="59" :min="1"></v-slider>
                                     </v-flex>
                                     <v-flex shrink style="width: 60px">
-                                        <v-text-field v-model="timeMinutes" class="mt-0" hide-details single-line type="number"></v-text-field>
+                                        <v-text-field v-model="cron.minutes" class="mt-0" hide-details single-line type="number"></v-text-field>
                                     </v-flex>
                                 </v-layout>
                             </v-card-text>
@@ -62,7 +62,7 @@
                                     <v-subheader class="headline">Su Inventario se sincronizara cada:</v-subheader>
                                 </v-layout>
                                 <v-layout align-center justify-center>
-                                    <p class="display-2">{{timeHours + ' : ' + timeMinutes + ' ' + stateSync}}</p>
+                                    <p class="display-2">{{cron.hours + ' : ' + cron.minutes + ' ' + stateSync}}</p>
                                 </v-layout>
                             </v-card-text>
                         </v-card>
@@ -77,14 +77,15 @@
 </template>
 
 <script>
-// import Cron from '@/components/Schedule/Cron'
+import { updateCron } from '@/utils/db/localdb'
 export default {
-  // components: { Cron },
   data () {
     return {
       stateSync: 'm',
-      timeHours: '',
-      timeMinutes: '',
+      cron: {
+        hours: '',
+        minutes: ''
+      },
       dialog: false
     }
   },
@@ -97,23 +98,38 @@ export default {
     }
   },
   watch: {
-    timeHours () {
-      if (this.timeHours < 10) {
-        this.timeHours = ('0' + this.timeHours).slice(-2)
+    'cron.hours' () {
+      this.isCronSetted = false
+      if (this.cron.hours < 10) {
+        this.cron.hours = ('0' + this.cron.hours).slice(-2)
       }
-      if (this.timeHours > 0) {
+      if (this.cron.hours > 0) {
         this.stateSync = 'h'
       } else {
         this.stateSync = 'm'
       }
     },
-    timeMinutes () {
-      if (this.timeMinutes < 10) {
-        this.timeMinutes = ('0' + this.timeMinutes).slice(-2)
+    'cron.minutes' () {
+      this.isCronSetted = false
+      if (this.cron.minutes < 10) {
+        this.cron.minutes = ('0' + this.cron.minutes).slice(-2)
       }
     }
   },
   methods: {
+    getInfo () {
+      this.dialog = true
+      let time = this.$store.state.schedule.timer
+      this.cron.hours = time.hours
+      this.cron.minutes = time.minutes
+      console.log(this.cron.hours)
+      console.log(this.cron.minutes)
+    },
+    save () {
+      this.$store.dispatch('saveSyncSchedule', this.cron)
+      this.$bus.emit('cron')
+      updateCron()
+    },
     startCRON () {
       this.$bus.emit('cron')
     },

@@ -81,6 +81,7 @@ export default {
           } else {
             this.hasConfig = false
             this.$store.dispatch('hasConfig', false)
+            this.$bus.emit('stop-cron')
           }
         }).then(() => {
           if (!this.hasConfig) {
@@ -89,9 +90,11 @@ export default {
             this.$bus.emit('cron')
             this.$router.push('/Home')
           }
+          console.log(this.hasConfig)
         })
       })
     },
+
     checkConfigState () {
       globalConfig(id).then(() => {
         this.$bus.emit('start-cron')
@@ -105,6 +108,7 @@ export default {
     },
     reset () {
       resetDatabase(id).then((response) => {
+        this.$bus.emit('stop-cron')
         console.log(response)
         this.$router.push('/User/Login')
       })

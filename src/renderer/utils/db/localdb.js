@@ -74,3 +74,18 @@ export function saveDatabaseConfig (id, data) {
     resolve()
   })
 }
+
+export function updateCron () {
+  console.log(store.state.global.id)
+  var deferred = q.defer()
+  db.update({_id: store.state.global.id}, { $set: { cron: {hours: store.state.schedule.timer.hours, minutes: store.state.schedule.timer.minutes} } }, { multi: true }, function (err, numReplaced) {
+    if (err) {
+      deferred.resolve(err)
+      console.log(err)
+    } else {
+      console.log(numReplaced)
+      // store.dispatch('saveDatabaseConfig', data)
+      deferred.resolve(numReplaced)
+    }
+  })
+}
