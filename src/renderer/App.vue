@@ -85,7 +85,7 @@ export default {
           }
         }).then(() => {
           if (!this.hasConfig) {
-            this.$router.push('/User/Login')
+            this.$router.push('/User/UserLogin')
           } else {
             this.$bus.emit('cron')
             this.$router.push('/Home')

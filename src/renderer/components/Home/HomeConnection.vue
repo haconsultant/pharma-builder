@@ -7,13 +7,13 @@
                 <v-btn @click="getInfo()">Local Info</v-btn>
             </v-card-title>
             <v-card-text class="fluid__container"> 
-                <h1>{{activeDatabase}}</h1>
+                <h1>{{database}}</h1>
                 <p>{{'Servidor - ' + server}}</p>
             </v-card-text>
             <v-card-actions>
                 <v-layout align-center justify-end class="mid__title" style="margin-top: -2rem!important;">
                 <v-btn @click="openConfig()">Configuracion<v-icon right dark>settings</v-icon></v-btn>
-                <v-btn router to="/connection/walkthrough">Paso a paso<v-icon right dark>list</v-icon></v-btn>
+                <v-btn router to="/Walkthrough/WalkthroughSteps">Paso a paso<v-icon right dark>list</v-icon></v-btn>
                 </v-layout>
             </v-card-actions>
         </v-card>
@@ -87,6 +87,9 @@ export default {
     }
   },
   computed: {
+    database () {
+      return this.$store.state.database.config.options.database === 'efficacis3' ? 'Effacis' : 'SmartPharma'
+    },
     sync () {
       return this.$store.state.global.synchronizing
     },

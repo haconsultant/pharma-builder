@@ -11,19 +11,19 @@ export default new Router({
       component: require('@/components/Home').default
     },
     {
-      path: '/connection/walkthrough',
+      path: '/walkthrough/walkthroughsteps',
       name: 'walkthrough',
-      component: require('@/components/Connection/Walkthrough').default
+      component: require('@/components/Connection/WalkthroughSteps').default
     },
     {
-      path: '/User/Login',
+      path: '/user/login',
       name: 'login_app',
-      component: require('@/components/User/Login').default
+      component: require('@/components/User/UserLogin').default
     },
     {
-      path: '/User/PharmacyBranch',
+      path: '/user/userpharmacybranch',
       name: 'login_pharmacyBranch',
-      component: require('@/components/User/Componets/PharmacyBranch').default
+      component: require('@/components/User/Componets/UserPharmacyBranch').default
     },
     {
       path: '*',

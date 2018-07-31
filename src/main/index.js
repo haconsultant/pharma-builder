@@ -89,7 +89,7 @@ app.on('activate', () => {
 function exit () {
   app.quit()
   mainWindow = null
-  tray = null
+  tray.destroy()
 }
 /* autoUpdater.on('update-downloaded', () => {
   autoUpdater.quitAndInstall()

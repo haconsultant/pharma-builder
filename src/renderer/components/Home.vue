@@ -1,37 +1,24 @@
 <template>
   <v-card class="flex-fluid" id="home__box">
                 <v-container class="full-flex">
-                <info></info>
+                <home-info></home-info>
         </v-container>
             <v-container class="full-flex">
-                <connection></connection>
+                <home-connection></home-connection>
         </v-container>
                 <v-container class="full-flex">
-                <schedule></schedule>
+                  <home-schedule></home-schedule>
         </v-container>
   </v-card>
-    <!-- <v-card class="flex-fluid" id="home__box">
-        <v-container class="full-flex">
-                <connection></connection>
-        </v-container>
-        <v-container class="full-flex">
-            <v-flex xs12 sm6 md4 lg3 align-center>
-                <connection></connection>
-            </v-flex>
-            <v-flex xs12 sm6 md4 lg3 align-center>
-                <schedule></schedule>
-            </v-flex>
-        </v-container> -->
-    </v-card>
 </template>
 
 <script>
-  import Connection from './Layout/Connection'
-  import Info from './Layout/Info'
-  import Schedule from './Layout/Schedule'
+  import HomeConnection from './Home/HomeConnection'
+  import HomeInfo from './Home/HomeInfo'
+  import HomeSchedule from './Home/HomeSchedule'
   export default {
     name: 'welcome',
-    components: { Connection, Info, Schedule },
+    components: { HomeConnection, HomeInfo, HomeSchedule },
     created () {
       // this.usarData()
     },

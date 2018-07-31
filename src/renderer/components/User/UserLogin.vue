@@ -58,7 +58,7 @@ export default {
               this.checkPharmacyInfo(response.data.pharmacies).then(response => {
                 this.user.pharmacies = response
                 this.$store.dispatch('saveUserData', this.user)
-                this.$router.push('/User/PharmacyBranch')
+                this.$router.push('/User/UserPharmacyBranch')
               })
             }).then(() => {
               this.isLoading = false
